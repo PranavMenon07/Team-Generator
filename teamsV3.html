@@ -1,0 +1,848 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Roll the Damn Teams</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #080e1a;
+      --card: #0c1525;
+      --card2: #0a1220;
+      --accent: #00e5a0;
+      --accent2: #00b8ff;
+      --danger: #ff4d6d;
+      --gold: #ffd700;
+      --silver: #c0c0c0;
+      --bronze: #cd7f32;
+      --muted: #5a7a9a;
+      --text: #c8dff0;
+      --border: rgba(0,229,160,0.12);
+      --glass: rgba(255,255,255,0.025);
+      --glow: 0 0 20px rgba(0,229,160,0.15);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100%;
+      font-family: 'Rajdhani', ui-sans-serif, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    body {
+      background-image:
+        radial-gradient(ellipse 80% 50% at 20% 0%, rgba(0,229,160,0.05) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(0,184,255,0.04) 0%, transparent 60%);
+      padding: 24px;
+    }
+
+    .container { max-width: 1020px; margin: 0 auto; }
+
+    /* HEADER */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-shadow: 0 0 30px rgba(0,229,160,0.4);
+    }
+
+    .meta { font-size: 12px; color: var(--muted); font-family: 'JetBrains Mono', monospace; letter-spacing: 1px; }
+
+    /* CARDS */
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    }
+
+    .card-title {
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    label {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    input[type=text], textarea, input[type=number] {
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 7px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus, textarea:focus { border-color: rgba(0,229,160,0.3); }
+    textarea { min-height: 100px; resize: vertical; }
+
+    .row { display: flex; flex-wrap: wrap; gap: 16px; }
+    .col { flex: 1; min-width: 220px; }
+    .col-sm { flex: 0 0 160px; min-width: 140px; }
+
+    /* BUTTONS */
+    .controls { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+
+    button {
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #021a10;
+      box-shadow: 0 0 18px rgba(0,229,160,0.25);
+    }
+    .btn-primary:hover { background: #00ffb3; box-shadow: 0 0 28px rgba(0,229,160,0.45); }
+
+    .btn-secondary {
+      background: rgba(0,184,255,0.12);
+      color: var(--accent2);
+      border: 1px solid rgba(0,184,255,0.25);
+    }
+    .btn-secondary:hover { background: rgba(0,184,255,0.2); }
+
+    .btn-danger {
+      background: rgba(255,77,109,0.12);
+      color: var(--danger);
+      border: 1px solid rgba(255,77,109,0.25);
+    }
+    .btn-danger:hover { background: rgba(255,77,109,0.22); }
+
+    /* CHECKBOX & RADIO */
+    .checkbox-group, .radio-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .check-label, .radio-label {
+      display: flex !important;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: var(--glass);
+      font-size: 13px;
+      color: var(--text);
+      cursor: pointer;
+      text-transform: none;
+      letter-spacing: 0;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 600;
+      transition: all 0.15s;
+    }
+    .check-label:has(input:checked), .radio-label:has(input:checked) {
+      border-color: rgba(0,229,160,0.4);
+      background: rgba(0,229,160,0.08);
+      color: var(--accent);
+    }
+    input[type=checkbox], input[type=radio] { accent-color: var(--accent); }
+
+    /* POINTS CONFIG */
+    .points-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .points-entry {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .points-entry input[type=number] {
+      width: 60px;
+      padding: 5px 8px;
+      font-size: 13px;
+    }
+    .place-label { font-size: 12px; }
+
+    /* GENERATED TEAMS */
+    .teams {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .team {
+      background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.06);
+      position: relative;
+      overflow: hidden;
+    }
+    .team::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      opacity: 0.5;
+    }
+
+    .team h3 {
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .team ul { list-style: none; padding: 0; }
+    .team ul li {
+      font-size: 14px;
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .team ul li:last-child { border-bottom: none; }
+    .player-name { font-weight: 700; color: #e6f0fa; }
+    .gun-name { color: var(--accent2); font-size: 13px; }
+    .gun-class { color: var(--muted); font-size: 11px; font-family: 'JetBrains Mono', monospace; }
+
+    .map-display {
+      margin-top: 14px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: rgba(0,184,255,0.06);
+      border: 1px solid rgba(0,184,255,0.15);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--accent2);
+      letter-spacing: 1px;
+    }
+
+    /* WIN ASSIGNMENT */
+    #winSection {
+      display: none;
+      margin-top: 16px;
+    }
+
+    .win-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .team-win-btn {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text);
+      padding: 8px 16px;
+      border-radius: 7px;
+      font-size: 13px;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .team-win-btn.rank-1 { border-color: rgba(255,215,0,0.4); color: var(--gold); background: rgba(255,215,0,0.06); }
+    .team-win-btn.rank-2 { border-color: rgba(192,192,192,0.4); color: var(--silver); background: rgba(192,192,192,0.06); }
+    .team-win-btn.rank-3 { border-color: rgba(205,127,50,0.4); color: var(--bronze); background: rgba(205,127,50,0.06); }
+    .team-win-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+
+    /* SCOREBOARD */
+    #scoreSection { display: none; }
+
+    .scoreboard {
+      margin-top: 10px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .sb-row {
+      display: grid;
+      grid-template-columns: 40px 1fr 80px 100px;
+      align-items: center;
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 14px;
+      transition: background 0.15s;
+    }
+    .sb-row:last-child { border-bottom: none; }
+    .sb-row:hover { background: rgba(255,255,255,0.02); }
+
+    .sb-header {
+      background: rgba(0,0,0,0.3);
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .sb-rank { font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--muted); }
+    .sb-rank.r1 { color: var(--gold); }
+    .sb-rank.r2 { color: var(--silver); }
+    .sb-rank.r3 { color: var(--bronze); }
+    .sb-name { font-weight: 700; color: var(--text); }
+    .sb-score {
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent);
+      text-align: right;
+    }
+    .sb-delta {
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--muted);
+      text-align: right;
+    }
+    .sb-delta.pos { color: var(--accent); }
+
+    footer {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.5px;
+    }
+
+    /* weapon textareas side by side */
+    .gun-areas { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+    .gun-areas textarea { min-height: 70px; flex: 1; min-width: 180px; font-size: 12px; }
+    .gun-area-label { font-size: 10px; color: var(--muted); margin-bottom: 3px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px; }
+
+    .section-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 14px 0;
+    }
+
+    .alert {
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: rgba(255,77,109,0.08);
+      border: 1px solid rgba(255,77,109,0.2);
+      color: var(--danger);
+      font-size: 13px;
+      margin-bottom: 10px;
+      display: none;
+    }
+
+    @keyframes fadeIn { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform: translateY(0); } }
+    .team, .sb-row { animation: fadeIn 0.25s ease both; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Roll the Damn Teams</h1>
+      <div class="meta">v2.0 // BALANCED // CYCLIC GUNS</div>
+    </header>
+
+    <div class="alert" id="alertBox"></div>
+
+    <!-- CONFIG CARD -->
+    <section class="card">
+      <div class="card-title">// Configuration</div>
+      <div class="row">
+        <div class="col-sm">
+          <label>Team Size</label>
+          <input id="teamSize" type="number" min="2" value="3" />
+        </div>
+        <div class="col-sm">
+          <label>Team Roll Mode</label>
+          <div class="radio-group" style="margin-top:2px;">
+            <label class="radio-label" title="Snake-draft by leaderboard rank — top players spread evenly"><input type="radio" name="rollMode" value="balanced" checked /> ⚖️ Balanced</label>
+            <label class="radio-label" title="Chaotic seeded scatter — pure unpredictable chaos"><input type="radio" name="rollMode" value="random" /> 🎲 Random</label>
+          </div>
+        </div>
+        <div class="col">
+          <label>Maps</label>
+          <input id="maps" type="text" value="nozomi/citadel, las vegas stadium, bernal, fortune stadium, kyoto, sys$horizon, las vegas, skyway stadium, seoul, monaco" />
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <!-- POINTS CONFIG -->
+      <div class="row">
+        <div class="col">
+          <label>Points Per Placement (1st → last)</label>
+          <div class="points-row" id="pointsRow">
+            <!-- dynamically built -->
+          </div>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <div class="row">
+        <div class="col">
+          <label>Player Names (one per line)</label>
+          <textarea id="players">Scorpion
+Luna
+Player
+Sushi
+Mikey
+Torres</textarea>
+        </div>
+        <div class="col">
+          <label>Weapon Assignment Mode</label>
+          <div class="radio-group">
+            <label class="radio-label"><input type="radio" name="weaponMode" value="player" checked /> Player</label>
+            <label class="radio-label"><input type="radio" name="weaponMode" value="team" /> Team</label>
+            <label class="radio-label"><input type="radio" name="weaponMode" value="game" /> Game</label>
+            <label class="radio-label"><input type="radio" name="weaponMode" value="none" /> No Gun Roll</label>
+          </div>
+
+          <label style="margin-top:14px;">Weapon Classes</label>
+          <div class="checkbox-group">
+            <label class="check-label"><input type="checkbox" id="useLight" checked /> Light</label>
+            <label class="check-label"><input type="checkbox" id="useMedium" checked /> Medium</label>
+            <label class="check-label"><input type="checkbox" id="useHeavy" checked /> Heavy</label>
+          </div>
+ 
+          <div style="margin-top:10px;">
+            <div class="gun-areas">
+              <div style="flex:1;min-width:160px;">
+                <div class="gun-area-label">LIGHT</div>
+                <textarea id="gunsLight">93r, arn-220, dagger, sword, bow, LH1, M11, M26 Matter, SH1900, SR-84, Throwing Knives, V9S, XP-54</textarea>
+              </div>
+              <div style="flex:1;min-width:160px;">
+                <div class="gun-area-label">MEDIUM</div>
+                <textarea id="gunsMedium">Akm, Fcar, CB-01 Repeater, Cerberus, CL-40, Dual Blades, Riot Shield, Famas, Model, P90, Pike, R.357, Chimera</textarea>
+              </div>
+              <div style="flex:1;min-width:160px;">
+                <div class="gun-area-label">HEAVY</div>
+                <textarea id="gunsHeavy">.50 Akimbo, BFR Titan, Flamethrower, KS-23, Lewis Gun, M134 Minigun, M60, MGL32, SA1216, SHAK-50, Sledgehammer, Spear</textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="btn-primary" id="generateBtn">⚡ Generate Teams & Map</button>
+        <button class="btn-danger" id="resetScoreBtn">↺ Reset Scores</button>
+      </div>
+    </section>
+
+    <!-- OUTPUT CARD -->
+    <section class="card">
+      <div class="card-title">// Generated Teams</div>
+      <div id="teamsContainer" class="teams"></div>
+      <div id="mapDisplay" class="map-display" style="display:none"></div>
+
+      <!-- WIN ASSIGNMENT -->
+      <div id="winSection">
+        <div class="section-divider"></div>
+        <div class="card-title">// Assign Placement & Award Points</div>
+        <div id="winBtns" class="win-row"></div>
+        <div id="rankQueue" style="margin-top:10px;font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace;"></div>
+      </div>
+
+      <footer style="margin-top:14px;">Guns cycle through full pool before repeating. Teams balanced by score rank. Scores persist until reset.</footer>
+    </section>
+
+    <!-- SCOREBOARD -->
+    <section class="card" id="scoreSection">
+      <div class="card-title">// Scoreboard</div>
+      <div class="scoreboard" id="scoreboard"></div>
+    </section>
+  </div>
+
+  <script>
+    // ─── STATE ─────────────────────────────────────────────────────────────
+    let scores = {};       // { playerName: totalPoints }
+    let lastDeltas = {};   // { playerName: deltaThisRound }
+    let gunCycle = [];     // shuffled pool, popped from
+    let currentTeams = []; // array of arrays of player names
+    let rankAssigning = 0; // which placement we're currently assigning (0-based)
+    let teamsRanked = [];  // team indices in placement order
+
+    // ─── HELPERS ───────────────────────────────────────────────────────────
+    const $ = id => document.getElementById(id);
+
+    function showAlert(msg) {
+      const el = $('alertBox');
+      el.textContent = msg;
+      el.style.display = 'block';
+      setTimeout(() => el.style.display = 'none', 3000);
+    }
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    // ─── POINTS ROW ────────────────────────────────────────────────────────
+    const DEFAULT_POINTS = [10, 7, 5, 3, 2, 1];
+
+    function buildPointsRow(n) {
+      const container = $('pointsRow');
+      // preserve existing values if possible
+      const existing = [...container.querySelectorAll('input')].map(i => parseInt(i.value) || 0);
+      container.innerHTML = '';
+      const max = Math.max(n, 2);
+      for (let i = 0; i < max; i++) {
+        const val = existing[i] !== undefined ? existing[i] : (DEFAULT_POINTS[i] !== undefined ? DEFAULT_POINTS[i] : 0);
+        const suffix = i === 0 ? '1st' : i === 1 ? '2nd' : i === 2 ? '3rd' : `${i+1}th`;
+        const entry = document.createElement('div');
+        entry.className = 'points-entry';
+        entry.innerHTML = `<span class="place-label">${suffix}</span><input type="number" min="0" value="${val}" style="width:56px" id="pts_${i}" />`;
+        container.appendChild(entry);
+      }
+    }
+
+    function getPoints(placeIndex) {
+      const el = $(`pts_${placeIndex}`);
+      return el ? (parseInt(el.value) || 0) : 0;
+    }
+
+    // ─── GUN POOL & CYCLE ──────────────────────────────────────────────────
+    function buildGunPool() {
+      const pool = [];
+      if ($('useLight').checked)
+        $('gunsLight').value.split(',').map(s => s.trim()).filter(Boolean).forEach(g => pool.push({ name: g, class: 'Light' }));
+      if ($('useMedium').checked)
+        $('gunsMedium').value.split(',').map(s => s.trim()).filter(Boolean).forEach(g => pool.push({ name: g, class: 'Medium' }));
+      if ($('useHeavy').checked)
+        $('gunsHeavy').value.split(',').map(s => s.trim()).filter(Boolean).forEach(g => pool.push({ name: g, class: 'Heavy' }));
+      return pool;
+    }
+
+    function nextGun(pool) {
+      if (gunCycle.length === 0) gunCycle = shuffle([...pool]);
+      return gunCycle.pop();
+    }
+
+    // ─── TEAM BALANCING ────────────────────────────────────────────────────
+    // Sort players by score desc, then snake-draft into teams for balance.
+    function balancedTeams(players, teamSize) {
+      const numPlayers = players.length;
+      if (numPlayers < 2) return [];
+
+      // Sort players by score (descending). Unknown players get 0.
+      const sorted = [...players].sort((a, b) => (scores[b] || 0) - (scores[a] || 0));
+
+      // Edge case: 2 or 3 players → each is their own "team"
+      if (numPlayers <= 3) return sorted.map(p => [p]);
+
+      const numTeams = Math.ceil(numPlayers / teamSize);
+      const teams = Array.from({ length: numTeams }, () => []);
+
+      // Snake draft: fill left→right then right→left
+      let direction = 1;
+      let teamIdx = 0;
+      for (let i = 0; i < sorted.length; i++) {
+        teams[teamIdx].push(sorted[i]);
+        teamIdx += direction;
+        if (teamIdx >= numTeams) { teamIdx = numTeams - 1; direction = -1; }
+        else if (teamIdx < 0) { teamIdx = 0; direction = 1; }
+      }
+      return teams;
+    }
+
+    // --- CHAOTIC RANDOM TEAMS ---
+    // Lehmer LCG seeded from high-res timestamp XOR player count,
+    // Fisher-Yates shuffle with that seed, then clean round-robin deal.
+    // The chaos is entirely in the shuffle — assignment is bulletproof.
+    function randomTeams(players, teamSize) {
+      const numPlayers = players.length;
+      if (numPlayers < 2) return [];
+      if (numPlayers <= 3) return shuffle([...players]).map(p => [p]);
+
+      // Seeded Lehmer LCG
+      let seed = (Math.floor(performance.now() * 1000) ^ (numPlayers * 0xdeadbeef)) >>> 0;
+      if (seed === 0) seed = 987654321;
+      const lcg = () => { seed = (Math.imul(seed, 48271) + 1) >>> 0; return (seed >>> 0) / 4294967296; };
+
+      // LCG Fisher-Yates shuffle
+      const pool = [...players];
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(lcg() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+
+      const numTeams = Math.ceil(numPlayers / teamSize);
+      const teams = Array.from({ length: numTeams }, () => []);
+
+      // Round-robin deal: guaranteed every player lands exactly once
+      for (let i = 0; i < pool.length; i++) {
+        teams[i % numTeams].push(pool[i]);
+      }
+
+      return teams;
+    }
+
+    // --- GUN ASSIGNMENT --- ────────────────────────────────────────────────────
+    function assignGuns(teams, pool, mode) {
+      if (mode === 'none') {
+        return teams.map(team => team.map(player => ({ player, gun: null, class: null })));
+      }
+      if (mode === 'player') {
+        return teams.map(team => team.map(player => {
+          const g = nextGun(pool); return { player, gun: g.name, class: g.class };
+        }));
+      }
+      if (mode === 'team') {
+        return teams.map(team => {
+          const g = nextGun(pool);
+          return team.map(player => ({ player, gun: g.name, class: g.class }));
+        });
+      }
+      // game
+      const g = nextGun(pool);
+      return teams.map(team => team.map(player => ({ player, gun: g.name, class: g.class })));
+    }
+
+    // ─── RENDER TEAMS ──────────────────────────────────────────────────────
+    function renderTeams(assignedGroups) {
+      const container = $('teamsContainer');
+      container.innerHTML = '';
+      currentTeams = assignedGroups.map(g => g.map(p => p.player));
+
+      assignedGroups.forEach((team, i) => {
+        const el = document.createElement('div');
+        el.className = 'team';
+        el.style.animationDelay = `${i * 0.05}s`;
+
+        const title = document.createElement('h3');
+        title.textContent = `Team ${i + 1}`;
+        el.appendChild(title);
+
+        const ul = document.createElement('ul');
+        team.forEach(p => {
+          const li = document.createElement('li');
+          const playerScore = scores[p.player] || 0;
+          if (p.gun) {
+            li.innerHTML = `
+              <span class="player-name">${p.player} <span style="color:var(--muted);font-size:11px;font-family:'JetBrains Mono',monospace">[${playerScore}pts]</span></span>
+              <span class="gun-name">${p.gun} <span class="gun-class">${p.class}</span></span>`;
+          } else {
+            li.innerHTML = `<span class="player-name">${p.player} <span style="color:var(--muted);font-size:11px;font-family:'JetBrains Mono',monospace">[${playerScore}pts]</span></span>`;
+          }
+          ul.appendChild(li);
+        });
+        el.appendChild(ul);
+        container.appendChild(el);
+      });
+    }
+
+    // ─── WIN BUTTONS ───────────────────────────────────────────────────────
+    const RANK_COLORS = ['rank-1','rank-2','rank-3'];
+    const RANK_LABELS = ['🥇 1st', '🥈 2nd', '🥉 3rd'];
+
+    function buildWinButtons() {
+      rankAssigning = 0;
+      teamsRanked = [];
+      const container = $('winBtns');
+      container.innerHTML = '';
+      currentTeams.forEach((team, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'team-win-btn';
+        btn.textContent = `Team ${i + 1}`;
+        btn.id = `winBtn_${i}`;
+        btn.addEventListener('click', () => assignRank(i));
+        container.appendChild(btn);
+      });
+      updateRankQueue();
+      $('winSection').style.display = 'block';
+    }
+
+    function assignRank(teamIdx) {
+      if (teamsRanked.includes(teamIdx)) return;
+      const btn = $(`winBtn_${teamIdx}`);
+      const colorClass = RANK_COLORS[rankAssigning] || '';
+      if (colorClass) btn.classList.add(colorClass);
+      btn.disabled = true;
+
+      teamsRanked.push(teamIdx);
+
+      // Award points
+      lastDeltas = {};
+      const pts = getPoints(rankAssigning);
+      currentTeams[teamIdx].forEach(player => {
+        if (!scores[player]) scores[player] = 0;
+        scores[player] += pts;
+        lastDeltas[player] = pts;
+      });
+
+      rankAssigning++;
+
+      // Auto-assign last team if only one remains
+      const remaining = currentTeams.map((_, i) => i).filter(i => !teamsRanked.includes(i));
+      if (remaining.length === 1) {
+        assignRank(remaining[0]);
+        return;
+      }
+
+      updateRankQueue();
+      renderScoreboard();
+    }
+
+    function updateRankQueue() {
+      const remaining = currentTeams.map((_, i) => i).filter(i => !teamsRanked.includes(i));
+      const nextLabel = RANK_LABELS[rankAssigning] || `#${rankAssigning + 1}`;
+      $('rankQueue').textContent = remaining.length > 0
+        ? `Next: click the team that placed ${nextLabel}`
+        : '✓ All placements assigned';
+    }
+
+    // ─── SCOREBOARD ────────────────────────────────────────────────────────
+    function renderScoreboard() {
+      const allPlayers = $('players').value.split('\n').map(p => p.trim()).filter(Boolean);
+      allPlayers.forEach(p => { if (!scores[p]) scores[p] = 0; });
+
+      const sorted = [...allPlayers].sort((a, b) => (scores[b] || 0) - (scores[a] || 0));
+
+      const sb = $('scoreboard');
+      sb.innerHTML = '';
+
+      // header
+      const header = document.createElement('div');
+      header.className = 'sb-row sb-header';
+      header.innerHTML = '<div>#</div><div>Player</div><div>+pts</div><div>Total</div>';
+      sb.appendChild(header);
+
+      sorted.forEach((player, idx) => {
+        const row = document.createElement('div');
+        row.className = 'sb-row';
+        row.style.animationDelay = `${idx * 0.04}s`;
+
+        const rankClass = idx === 0 ? 'r1' : idx === 1 ? 'r2' : idx === 2 ? 'r3' : '';
+        const rankSymbol = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx + 1}`;
+        const delta = lastDeltas[player] !== undefined ? `+${lastDeltas[player]}` : '';
+
+        row.innerHTML = `
+          <div class="sb-rank ${rankClass}">${rankSymbol}</div>
+          <div class="sb-name">${player}</div>
+          <div class="sb-delta ${delta ? 'pos' : ''}">${delta}</div>
+          <div class="sb-score">${scores[player] || 0}</div>`;
+        sb.appendChild(row);
+      });
+
+      $('scoreSection').style.display = 'block';
+    }
+
+    // ─── GENERATE ──────────────────────────────────────────────────────────
+    $('generateBtn').addEventListener('click', () => {
+      const players = $('players').value.split('\n').map(p => p.trim()).filter(Boolean);
+      if (players.length < 2) return showAlert('Minimum 2 players required.');
+
+      const mode = document.querySelector('input[name="weaponMode"]:checked').value;
+      const pool = buildGunPool();
+      if (mode !== 'none' && pool.length === 0) return showAlert('Select at least one weapon class!');
+
+      const teamSize = Math.max(2, parseInt($('teamSize').value) || 3);
+      const maps = $('maps').value.split(',').map(m => m.trim()).filter(Boolean);
+
+      // Reset per-round gun cycle each generation for the purpose of tracking
+      // (cycle persists across generations for true no-repeat behaviour)
+      const rollMode = document.querySelector('input[name="rollMode"]:checked').value;
+      const teams = rollMode === 'balanced' ? balancedTeams(players, teamSize) : randomTeams(players, teamSize);
+      const assigned = assignGuns(teams, pool, mode);
+
+      renderTeams(assigned);
+
+      if (maps.length > 0) {
+        const map = maps[Math.floor(Math.random() * maps.length)];
+        const md = $('mapDisplay');
+        md.textContent = `📍 Map: ${map.toUpperCase()}`;
+        md.style.display = 'block';
+      }
+
+      // Rebuild points row to match team count
+      buildPointsRow(teams.length);
+
+      // Build win buttons
+      buildWinButtons();
+
+      // Clear last deltas for new round
+      lastDeltas = {};
+
+      // Initialize scores for all players
+      players.forEach(p => { if (scores[p] === undefined) scores[p] = 0; });
+
+      renderScoreboard();
+    });
+
+    // ─── RESET SCORES ──────────────────────────────────────────────────────
+    $('resetScoreBtn').addEventListener('click', () => {
+      if (!confirm('Reset all scores to zero?')) return;
+      scores = {};
+      lastDeltas = {};
+      gunCycle = [];
+      renderScoreboard();
+    });
+
+    // ─── INIT ──────────────────────────────────────────────────────────────
+    buildPointsRow(4);
+
+    // watch team size to update points slots
+    $('teamSize').addEventListener('change', () => {
+      const players = $('players').value.split('\n').map(p => p.trim()).filter(Boolean);
+      const ts = Math.max(2, parseInt($('teamSize').value) || 3);
+      const n = Math.ceil(players.length / ts);
+      buildPointsRow(Math.max(n, 2));
+    });
+
+    $('players').addEventListener('change', () => {
+      const players = $('players').value.split('\n').map(p => p.trim()).filter(Boolean);
+      const ts = Math.max(2, parseInt($('teamSize').value) || 3);
+      const n = Math.ceil(players.length / ts);
+      buildPointsRow(Math.max(n, 2));
+    });
+  </script>
+</body>
+</html>
